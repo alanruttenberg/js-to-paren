@@ -1,15 +1,15 @@
 ;;;; compiler.lisp
 ;;;
-;;; Defines the interface functions for the js-on-cl compiler.
+;;; Defines the interface functions for the jwacs compiler.
 ;;;
 ;;; Copyright (c) 2006 James Wright
 ;;; See LICENSE for full licensing details.
 ;;;
-(in-package :js-on-cl)
+(in-package :jwacs)
 
 ;;;; ======= Module datatype =======================================================================
 (defstruct module
-  "Represents a single module of a js-on-cl application"
+  "Represents a single module of a jwacs application"
   type
   path
   uripath
@@ -58,11 +58,11 @@
 
       Symbol | Description            | Extensions
       -------|------------------------|------------------
-      'JW    | js-on-cl source           | .jw, .jwa, .jwacs
+      'JW    | jwacs source           | .jw, .jwa, .jwacs
       'JS    | Javascript source      | .js"
   
   (let ((type-symbol (if (stringp raw-type)
-                            (intern (string-upcase raw-type) :js-on-cl)
+                            (intern (string-upcase raw-type) :jwacs)
                             raw-type)))
     (case type-symbol
       ((jw jwa jwacs)
@@ -191,7 +191,7 @@
     cps                                 ; Convert functions and loops to continuation-passing style functions
     trampoline                          ; Convert functions to trampoline-style functions
     runtime)                            ; Add calls into the runtime to support dynamic behaviour
-  "The list of transformations (in order) that are performed to convert js-on-cl source into
+  "The list of transformations (in order) that are performed to convert jwacs source into
    Javascript source.")
 
 (defun transform-modules (module-list 
@@ -333,11 +333,11 @@
 ;;;; ======= Cached defaults =======================================================================
 ;; These strings will be used to generate default versions of missing files.
 
-(defparameter *runtime-text* (read-asdf-component-text '(:js-on-cl "jw-runtime"))
-  "The text of the js-on-cl runtime")
+(defparameter *runtime-text* (read-asdf-component-text '(:jwacs "jw-runtime"))
+  "The text of the jwacs runtime")
 
-(defparameter *debug-runtime-text* (read-asdf-component-text '(:js-on-cl "jw-debug-runtime"))
-  "The text of the debug-mode js-on-cl runtime")
+(defparameter *debug-runtime-text* (read-asdf-component-text '(:jwacs "jw-debug-runtime"))
+  "The text of the debug-mode jwacs runtime")
 
 (defparameter *cached-runtimes* (list (cons "jw-runtime" *runtime-text*)
                                       (cons "jw-rt" *runtime-text*)
@@ -345,10 +345,10 @@
                                       (cons "jw-d-rt" *debug-runtime-text*))
   "A lookup table for generating the appropriate runtime depending upon the specified name")
 
-(defparameter *default-template* (read-asdf-component-text '(:js-on-cl "default-template"))
+(defparameter *default-template* (read-asdf-component-text '(:jwacs "default-template"))
   "The text of the default application template")
 
-(defparameter *default-iframe* (read-asdf-component-text '(:js-on-cl "default-iframe"))
+(defparameter *default-iframe* (read-asdf-component-text '(:jwacs "default-iframe"))
   "The text of the hidden iframe for bookmark handling")
 
 (defun generate-runtime (runtime-module compress-mode combine-mode)
@@ -375,7 +375,7 @@
                    &key debug-mode (compress-mode (not debug-mode)) (combine-mode (not debug-mode))
                         template-uripath output-uripath prefix-lookup (runtime-uripath (if debug-mode "jw-debug-runtime.js" "jw-rt.js"))
                         inline-output-stream inline-main-text)
-  "Build a wrapper html file for a js-on-cl application.  COMBINE-MODE is forced to T if an
+  "Build a wrapper html file for a jwacs application.  COMBINE-MODE is forced to T if an
    INLINE-OUTPUT-STREAM is provided."
   (flet ((get-path (param-uripath path-name path-type)
            "If PARAM-PATH is non-NIL, return it.

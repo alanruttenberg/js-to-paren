@@ -1,0 +1,14 @@
+==== js-to-parenscript.lisp ====
+@@ -143,11 +143,10 @@
+(condition (for-condition js-form))
+(step (for-step js-form))
+(body (for-body js-form)) )
+-    `(while t
++    `(progn
+       ,(as-paren initializer)
+-      (if (not ,(as-paren condition))
+-   (break))
+-      ,(as-paren step) ,(as-paren body))))
++      (while ,(as-paren condition)
++        ,(as-paren body) ,(as-paren step)))))
+==== end patch ====

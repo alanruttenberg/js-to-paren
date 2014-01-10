@@ -1,0 +1,57 @@
+==== js-on-cl/src/js-to-parenscript.lisp ====
+@@ -1,5 +1,30 @@
+ (in-package :js-on-cl)
+
++(defparameter *symbols-to-paren-tokens*
++  (let ((ht (make-hash-table :test 'eq)))
++    (maphash #'(lambda (k v)
++                (setf (gethash k ht) v))
++             *symbols-to-tokens*)
++    (loop for (k v) in '(;; where do these appears?
++                         ;;(:COLON ":")
++                         ;;(:HOOK "?")
++                         (:LOGICAL-OR "or")
++                         (:ASSIGN "setf")
++                         (:BAR2 "or")
++                         (:BANG "not")
++                         (:POST-INCR "incf")
++                         (:MINUS2 "decf")
++                         (:POST-DECR "decf")
++                         (:PLUS2 "incf")
++                         (:PRE-INCR "incf")
++                         (:PRE-DECR "decf")
++                         (:LOGICAL-NOT "not"))
++          do (setf (gethash k ht) v))
++    ht)
++  "Map from token symbol to parenscript token.")
++
++
++
+ (defun js-intern (js-literal-string)
+   "interns a camel-cased js string to an appropriate lispy symbol"
+   (intern
+@@ -56,7 +81,7 @@
+ (defun token-to-paren (tok)
+   (js-intern
+    (or
+-    (gethash tok *symbols-to-tokens*)
++    (gethash tok *symbols-to-paren-tokens*)
+     (string-downcase (string tok)))))
+
+ (defmethod as-paren ((js-form unary-operator))
+@@ -143,11 +168,10 @@
+ 	(condition (for-condition js-form))
+ 	(step (for-step js-form))
+ 	(body (for-body js-form)) )
+-    `(while t
++    `(progn
+       ,(as-paren initializer)
+-      (if (not ,(as-paren condition))
+-	  (break))
+-      ,(as-paren step) ,(as-paren body))))
++      (while ,(as-paren condition)
++        ,(as-paren body) ,(as-paren step)))))
+
+
+ (defmethod as-paren ((js-form comma-expr))
+==== end patch ====

@@ -1,27 +1,4 @@
-(in-package :js-on-cl)
-
-(defparameter *symbols-to-paren-tokens*
-  (let ((ht (make-hash-table :test 'eq)))
-    (maphash #'(lambda (k v)
-                (setf (gethash k ht) v))
-             *symbols-to-tokens*)
-    (loop for (k v) in '(;; where do these appears?
-                         ;;(:COLON ":")
-                         ;;(:HOOK "?")
-                         (:LOGICAL-OR "or")
-                         (:ASSIGN "setf")
-                         (:BAR2 "or")
-                         (:BANG "not")
-                         (:POST-INCR "incf")
-                         (:MINUS2 "decf")
-                         (:POST-DECR "decf")
-                         (:PLUS2 "incf")
-                         (:PRE-INCR "incf")
-                         (:PRE-DECR "decf")
-                         (:LOGICAL-NOT "not"))
-          do (setf (gethash k ht) v))
-    ht)
-  "Map from token symbol to parenscript token.")
+(in-package :js-to-paren)
 
 (defparameter *symbols-to-paren-tokens*
   (let ((ht (make-hash-table :test 'eq)))

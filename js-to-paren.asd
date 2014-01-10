@@ -1,23 +1,10 @@
-;;;; jwacs.asd
-;;;
-;;; This is the system definition file for the jwacs project.
-;;; It defines the asdf system plus any extra asdf operations
-;;; (eg test-op).
+;;; This was originally the system definition file for the jwacs
+;;; project, then suave's js-on-cl.
 
-(defpackage :js-on-cl-system
-  (:use :cl :asdf)
-  (:export
-   #:*version*
-   #:*executable-name*))
-
-(in-package :js-on-cl-system)
-
-;;;; ======= Build parameters ======================================================================
-
-(defparameter *version* "alpha2"
-  "The current version")
+(in-package :asdf)
 
 ;;;; ======= Compilation configuration =============================================================
+
 (defparameter *muffle-conflicts* nil
   "When T, yacc warnings about Shift/Reduce and Reduce/Reduce conflicts will be muffled.
    When NIL, all such conflicts will be reported.
@@ -29,9 +16,8 @@
    we're trying to load parse-javascript.lisp).")
 
 ;;;; ======= System definition =====================================================================
-(asdf:defsystem js-on-cl 
-  :version *version*
-  :author "Red Daly"
+(defsystem js-to-paren
+  :author "James Wright, Red Daly, Alan Ruttenberg"b
   :licence "MIT License <http://www.opensource.org/licenses/mit-license.php>"
   :serial t
   :components ((:module "external"
@@ -64,12 +50,5 @@
 ;		 (:file "compiler")
 		 (:file "js-to-parenscript"))))
 ;		 #+(or sbcl lispworks) (:file "main"))
-  :depends-on (cl-ppcre))
+  :depends-on (cl-ppcre parenscript))
 
-;;;; ======= Test operation ========================================================================
-;; (defmethod perform ((o test-op) (c (eql (find-system 'js-on-cl))))
-;;   (operate 'load-op 'js-on-cl-tests)
-;;   (operate 'test-op 'js-on-cl-tests))
-
-;; (defmethod operation-done-p ((o test-op) (c (eql (find-system 'js-on-cl-tests))))
-;;   nil)
