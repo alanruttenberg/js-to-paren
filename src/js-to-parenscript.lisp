@@ -4,7 +4,7 @@
   (let ((ht (make-hash-table :test 'eq)))
     (maphash #'(lambda (k v)
                 (setf (gethash k ht) v))
-             *symbols-to-tokens*)
+             jwacs::*symbols-to-tokens*)
     (loop for (k v) in '(;; where do these appears?
                          ;;(:COLON ":")
                          ;;(:HOOK "?")
