@@ -1,12 +1,12 @@
 ;;;; static-analysis.lisp
 ;;;
 ;;; Defines some utilities for statically analyzing the control flow of
-;;; js-on-cl source elements.
+;;; jwacs source elements.
 ;;;
 ;;; Copyright (c) 2006 James Wright
 ;;; See LICENSE for full licensing details.
 ;;;
-(in-package :js-on-cl)
+(in-package :jwacs)
 
 ;;;; ======= Simple predicates =====================================================================
 

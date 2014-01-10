@@ -6,7 +6,7 @@
 ;;; Copyright (c) 2005-2006 James Wright
 ;;; See LICENSE for full licensing details.
 ;;;
-(in-package :js-on-cl)
+(in-package :jwacs)
 
 #-(or sbcl cmu)
 (defmacro defelement (name &rest slots)
@@ -189,7 +189,7 @@
   (handler nil :type (or identifier function-expression))
   (thunk-body nil :type (or (cons source-element) null)))
 
-;;;; ------- js-on-cl extended syntax -----------------------------------------------------------------
+;;;; ------- jwacs extended syntax -----------------------------------------------------------------
 (defelement (suspend-statement (:include source-element)))
 
 (defelement (resume-statement (:include source-element))

@@ -6,7 +6,7 @@
 ;;; Copyright (c) 2006 James Wright
 ;;; See LICENSE for full licensing details.
 ;;;
-(in-package :js-on-cl)
+(in-package :jwacs)
 
 ;;; XXX Note that the runtime transformation does not preserve source-position
 ;;; information.  The only reason for that is that the trampoline transformation is where
@@ -25,7 +25,7 @@
   "Runtime function called to flag a function expression as a continuation")
 
 (defparameter *makeLambda-fn* (make-identifier :name "$lambda")
-  "Runtime function called to flag a function expression as a transformed js-on-cl function expression")
+  "Runtime function called to flag a function expression as a transformed jwacs function expression")
 
 (defparameter *callFromDirect-fn* (make-identifier :name "$callFromDirect")
   "Runtime function which will call a transformed function with a trampoline loop and identity continuation")

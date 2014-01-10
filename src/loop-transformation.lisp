@@ -12,7 +12,7 @@
 ;;; Copyright (c) 2005 Greg Smolyn and James Wright
 ;;; See LICENSE for full licensing details.
 ;;;
-(in-package :js-on-cl)
+(in-package :jwacs)
 
 ;; ===================================
 ;; WHILE LOOP

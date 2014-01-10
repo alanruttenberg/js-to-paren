@@ -6,7 +6,7 @@
 ;;; Copyright (c) 2005 James Wright
 ;;; See LICENSE for full licensing details.
 ;;;
-(in-package :js-on-cl)
+(in-package :jwacs)
 
 (eval-when (:compile-toplevel :load-toplevel)
   (defun re-cond-clause (string start block-name clause)

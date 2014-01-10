@@ -1,12 +1,12 @@
 ;;;; type-analysis.lisp
 ;;;
 ;;; Defines functions and data structures for static type analysis
-;;; on js-on-cl source code.
+;;; on jwacs source code.
 ;;;
 ;;; Copyright (c) 2006 James Wright
 ;;; See LICENSE for full licensing details.
 ;;;
-(in-package :js-on-cl)
+(in-package :jwacs)
 
 ;;; ======================================================================
 ;;;; Graph data types and utilities

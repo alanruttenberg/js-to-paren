@@ -13,7 +13,7 @@
 ;;; Copyright (c) 2005 Greg Smolyn and James Wright
 ;;; See LICENSE for full licensing details.
 ;;;
-(in-package :js-on-cl) 
+(in-package :jwacs) 
 
 ; Our main entry point to the ugly printer
 ;   Please note that we're cheating somewhat-- the source

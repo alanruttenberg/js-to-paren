@@ -10,7 +10,7 @@
 ;;; Copyright (c) 2005 James Wright and Greg Smolyn
 ;;; See LICENSE for full licensing details.
 ;;;
-(in-package :js-on-cl)
+(in-package :jwacs)
 
 ;;;; Parser
 
@@ -583,7 +583,7 @@
   ((function-body :left-curly :right-curly) nil)
 
   ((import-decl :import :identifier :string-literal insertable-semicolon)
-   (make-import-decl :type-symbol (intern (string-upcase $$2) :js-on-cl)
+   (make-import-decl :type-symbol (intern (string-upcase $$2) :jwacs)
                      :uripath $3
                      :start $s :end $e))
   ((import-decl :import :string-literal insertable-semicolon) (make-import-decl :uripath $$2 :start $s :end $e))
@@ -690,9 +690,9 @@
                       (eq :right-curly (yacc:yacc-parse-error-terminal err))
                       (eq 'yacc:yacc-eof-symbol (yacc:yacc-parse-error-terminal err)))
                   (invoke-restart 'yacc:insert-terminal :inserted-semicolon
-				  (read-from-string "#s(js-on-cl::token :terminal :inserted-semicolon :value \";\")")))
+				  (read-from-string "#s(jwacs::token :terminal :inserted-semicolon :value \";\")")))
 
-                 ;; Resignal as a js-on-cl error if we don't handle the yacc error
+                 ;; Resignal as a jwacs error if we don't handle the yacc error
                  (t (resignal err)))))
                     
       (handler-bind ((yacc:yacc-parse-error #'handle-yacc-error))

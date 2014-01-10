@@ -1,12 +1,12 @@
 ;;;; general-utilities.lisp
 ;;;
 ;;; Handy utility functions that don't really belong anywhere else
-;;; (these aren't really js-on-cl-specific in any way)
+;;; (these aren't really jwacs-specific in any way)
 ;;;
 ;;; Copyright (c) 2006 James Wright
 ;;; See LICENSE for full licensing details.
 ;;;
-(in-package :js-on-cl)
+(in-package :jwacs)
 
 ;;;; ======= Anaphoric conditionals ================================================================
 (defmacro aif (test-form then-form &optional else-form)
@@ -76,10 +76,10 @@
    The last element is a string naming a component.
    There may be intermediate strings naming intermediate modules.  Eg:
    
-       (:JS-ON-CL-TESTS \"tests\" \"test-cps-transformation\")
+       (:JWACS-TESTS \"tests\" \"test-cps-transformation\")
 
    names the test-cps-transformation component, which is part of the tests module, which
-   is part of the :JS-ON-CL-TESTS system."
+   is part of the :JWACS-TESTS system."
   (let ((component (asdf:find-system (car component-path))))
     (dolist (name (cdr component-path))
       (setf component (asdf:find-component component name)))

@@ -5,7 +5,7 @@
 ;;; Copyright (c) 2005-2006 James Wright and Greg Smolyn
 ;;; See LICENSE for full licensing details.
 ;;;
-(in-package :js-on-cl)
+(in-package :jwacs)
 
 ;;;; CPS transformation
 ;;; Initial, naive version does the following:

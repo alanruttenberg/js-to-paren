@@ -3,6 +3,8 @@
 
 (in-package :asdf)
 
+(defpackage :jwacs-system)
+
 ;;;; ======= Compilation configuration =============================================================
 
 (defparameter *muffle-conflicts* nil
@@ -15,9 +17,10 @@
    at all other times (so that SBCL won't drop into the debugger when
    we're trying to load parse-javascript.lisp).")
 
+
 ;;;; ======= System definition =====================================================================
 (defsystem js-to-paren
-  :author "James Wright, Red Daly, Alan Ruttenberg"b
+  :author "James Wright, Red Daly, Alan Ruttenberg"
   :licence "MIT License <http://www.opensource.org/licenses/mit-license.php>"
   :serial t
   :components ((:module "external"

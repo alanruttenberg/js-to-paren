@@ -5,7 +5,7 @@
 ;;; Copyright (c) 2005 Greg Smolyn
 ;;; See LICENSE for full licensing details.
 ;;;
-(in-package :js-on-cl)
+(in-package :jwacs)
 
 (defun expand-hashtable-to-values (hashtable)
   "Returns a list of all the values stored in a hashtable."
@@ -24,7 +24,7 @@
   (let* ((starting-point (first starting-production))
          (starting-symbol (first starting-point))
          (header `(yacc:define-parser ,parser-name
-                   (:muffle-conflicts ,js-on-cl-system::*muffle-conflicts*)
+                   (:muffle-conflicts ,jwacs-system::*muffle-conflicts*)
 ;		   (:print-derives-epsilon t)
 ;		   (:print-first-terminals t)
 ;		   (:print-states t)

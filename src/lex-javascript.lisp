@@ -7,7 +7,7 @@
 ;;; Copyright (c) 2005 James Wright
 ;;; See LICENSE for full licensing details.
 ;;;
-(in-package :js-on-cl)
+(in-package :jwacs)
 
 ;;;; Token definitions
 (defmacro deftoken (symbol &optional key token-type)

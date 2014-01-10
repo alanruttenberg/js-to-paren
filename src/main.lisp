@@ -5,7 +5,7 @@
 ;;; Copyright (c) 2006 James Wright
 ;;; See LICENSE for full licensing details.
 ;;;
-(in-package :js-on-cl)
+(in-package :jwacs)
 
 (defun command-line-arguments ()
   "return a list of the command-line arguments"
@@ -14,14 +14,14 @@
   #-(or sbcl lispworks) (error "Lispworks and SBCL are the only currently-supported compilers for binary creation"))
   
 (defun main ()
-  "This is the main entry-point for the js-on-cl binary."
+  "This is the main entry-point for the jwacs binary."
   (show-banner)
   (handler-case 
       (multiple-value-bind (template output prefix-lookup bundle-mode compress-mode runtime target)
           (decode-arguments)
         (let ((build-args (list target)))
           (unless target
-            (format *error-output* "~&js-on-cl: No target specified~%")
+            (format *error-output* "~&jwacs: No target specified~%")
             (show-usage)
             (return-from main 255))
           (format t "~&Main source file:  ~A" target)
@@ -49,7 +49,7 @@
           0))
     (condition (c)
        (let ((*print-escape* nil))
-         (format *error-output* "~&js-on-cl: ")
+         (format *error-output* "~&jwacs: ")
          (print-object c *error-output*)
          (terpri *error-output*)
          254))))
@@ -120,7 +120,7 @@
 (defun show-banner ()
   (format t "~%~%~
              ===============================================================================~%~
-             js-on-cl - Javascript With Advanced Continuation Support~%~
+             jwacs - Javascript With Advanced Continuation Support~%~
              version: ~A~%~
              -------------------------------------------------------------------------------"
           jw-system:*version*)
@@ -148,7 +148,7 @@
                ~%                  and comments will be preserved.  Defaults to on.~
                ~%   -b on|off      Turn bundle mode on or off.  When on, all output Javascript~
                ~%                  files will be combined into a single file.  When off, each~
-               ~%                  js-on-cl file will be compiled into a seperate Javascript file,~
+               ~%                  jwacs file will be compiled into a seperate Javascript file,~
                ~%                  and each imported Javascript file will be linked to separately.~
                ~%                  Defaults to on.
                ~%~%"

@@ -1,10 +1,10 @@
 ;;;; conditions.lisp
 ;;;
-;;; Defines the hierarchy of custom conditions that are used by js-on-cl
+;;; Defines the hierarchy of custom conditions that are used by jwacs
 ;;;
 ;;; Copyright (c) 2006 by James Wright
 ;;;
-(in-package :js-on-cl)
+(in-package :jwacs)
 
 (define-condition positioned-condition (condition)
   ((filename :initarg :filename :initform nil :reader filename)
