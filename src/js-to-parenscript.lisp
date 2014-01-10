@@ -1,4 +1,52 @@
-(in-package :jwacs)
+(in-package :js-on-cl)
+
+(defparameter *symbols-to-paren-tokens*
+  (let ((ht (make-hash-table :test 'eq)))
+    (maphash #'(lambda (k v)
+                (setf (gethash k ht) v))
+             *symbols-to-tokens*)
+    (loop for (k v) in '(;; where do these appears?
+                         ;;(:COLON ":")
+                         ;;(:HOOK "?")
+                         (:LOGICAL-OR "or")
+                         (:ASSIGN "setf")
+                         (:BAR2 "or")
+                         (:BANG "not")
+                         (:POST-INCR "incf")
+                         (:MINUS2 "decf")
+                         (:POST-DECR "decf")
+                         (:PLUS2 "incf")
+                         (:PRE-INCR "incf")
+                         (:PRE-DECR "decf")
+                         (:LOGICAL-NOT "not"))
+          do (setf (gethash k ht) v))
+    ht)
+  "Map from token symbol to parenscript token.")
+
+(defparameter *symbols-to-paren-tokens*
+  (let ((ht (make-hash-table :test 'eq)))
+    (maphash #'(lambda (k v)
+                (setf (gethash k ht) v))
+             *symbols-to-tokens*)
+    (loop for (k v) in '(;; where do these appears?
+                         ;;(:COLON ":")
+                         ;;(:HOOK "?")
+                         (:LOGICAL-OR "or")
+                         (:ASSIGN "setf")
+                         (:BAR2 "or")
+                         (:BANG "not")
+                         (:POST-INCR "incf")
+                         (:MINUS2 "decf")
+                         (:POST-DECR "decf")
+                         (:PLUS2 "incf")
+                         (:PRE-INCR "incf")
+                         (:PRE-DECR "decf")
+                         (:LOGICAL-NOT "not"))
+          do (setf (gethash k ht) v))
+    ht)
+  "Map from token symbol to parenscript token.")
+
+
 
 (defun js-intern (js-literal-string)
   "interns a camel-cased js string to an appropriate lispy symbol"
@@ -16,6 +64,20 @@
        (format nil "-~A" (string-downcase match)))
    :simple-calls t))
 
+(defmacro once-only ((&rest names) &body body)
+  (let ((gensyms (loop repeat (length names) collect (gensym))))
+    `(let (,@(loop for g in gensyms collect `(,g (gensym))))
+      `(let (,,@(loop for g in gensyms for n in names collect ``(,,g ,,n)))
+        ,(let (,@(loop for n in names for g in gensyms collect `(,n ,g)))
+           ,@body)))))
+
+(defmacro expand-progn-subexp (subexp)
+  (once-only (subexp)
+    `(if (eql 1 (length ,subexp))
+      (as-paren (first ,subexp))
+      `(progn
+        ,@(mapcar #'as-paren ,subexp)))))
+
 (defgeneric as-paren (js-elem)
   (:documentation "converts a javascript element to a parenscript element.
 Input is an abstract javascript form and output is a parenscript form."))
@@ -27,11 +89,7 @@ Input is an abstract javascript form and output is a parenscript form."))
 (defmethod as-paren ((lengthy-decl var-decl-statement))
   "Converts a var declaration statement like var x = 3, y = 34; to a
 series of (defvar x 3) (defvar y 34) forms."
-  (let ((statements (var-decl-statement-var-decls  lengthy-decl)))
-    (if (eql 1 (length statements))
-	(as-paren (first statements))
-	`(progn
-	  ,@(mapcar #'as-paren statements)))))
+  (expand-progn-subexp (var-decl-statement-var-decls lengthy-decl)))
 
 (defmethod as-paren ((decl var-decl))
   (let ((name (js-intern
@@ -56,7 +114,7 @@ series of (defvar x 3) (defvar y 34) forms."
 (defun token-to-paren (tok)
   (js-intern
    (or
-    (gethash tok *symbols-to-tokens*)
+    (gethash tok *symbols-to-paren-tokens*)
     (string-downcase (string tok)))))
 
 (defmethod as-paren ((js-form unary-operator))
@@ -89,7 +147,7 @@ series of (defvar x 3) (defvar y 34) forms."
 
 (defmethod as-paren ((js-form object-literal))
   (let ((properties (object-literal-properties js-form)))
-    `(create ,@(mapcan
+    `(ps:create ,@(mapcan
 		#'(lambda (entry)
 		    `(,(as-paren (car entry))
 		      ,(as-paren (cdr entry))))
@@ -107,7 +165,7 @@ series of (defvar x 3) (defvar y 34) forms."
 (defmethod as-paren ((js-form property-access))
   (let ((target (property-access-target js-form))
 	(field (property-access-field js-form)))
-    `(slot-value ,(as-paren target) ,(as-paren field) )))
+    `(ps:getprop ,(as-paren target) ,(as-paren field) )))
 
 (defmethod as-paren ((js-form conditional))
   (let ((condition (conditional-condition js-form))
@@ -122,7 +180,7 @@ series of (defvar x 3) (defvar y 34) forms."
 	(then-arg (if-statement-then-statement js-form))
 	(else-arg (if-statement-else-statement js-form)))
     (if (not else-arg)
-	`(if ,(as-paren condition) ,(as-paren then-arg))
+	`(when ,(as-paren condition) ,(as-paren then-arg))
 	`(if ,(as-paren condition) ,(as-paren then-arg) ,(as-paren else-arg)))))
 
 (defmethod as-paren ((js-form do-statement))
@@ -143,20 +201,17 @@ series of (defvar x 3) (defvar y 34) forms."
 	(condition (for-condition js-form))
 	(step (for-step js-form))
 	(body (for-body js-form)) )
-    `(while t
+    `(progn
       ,(as-paren initializer)
-      (if (not ,(as-paren condition))
-	  (break))
-      ,(as-paren step) ,(as-paren body))))
+      (while ,(as-paren condition)
+        ,(as-paren body) ,(as-paren step)))))
 
 
 (defmethod as-paren ((js-form comma-expr))
-  (let ((expressions (comma-expr-exprs js-form)))
-    `(progn ,@(mapcar #'as-paren expressions))))
+  (expand-progn-subexp (comma-expr-exprs js-form)))
 
 (defmethod as-paren ((js-form statement-block))
-  (let ((statements (statement-block-statements js-form)))
-    `(progn ,@(mapcar #'as-paren statements))))
+  (expand-progn-subexp (statement-block-statements js-form)))
 
 (defmethod as-paren ((js-form function-expression))
   (let ((name (function-expression-name js-form))
@@ -177,6 +232,21 @@ series of (defvar x 3) (defvar y 34) forms."
 (defmethod as-paren ((js-form return-statement))
   `(return ,(as-paren (return-statement-arg js-form))))
 
+;; (defmethod as-paren ((js-form y))
+;;   (let* ((body (try-body js-form))
+;;          (catch-clause (try-catch-clause js-form))
+;;          (binding (catch-clause-binding catch-clause))
+;;          (catch-body (catch-clause-body catch-clause))
+;;          (finally (try-finally-clause js-form)))
+;;     `(try
+;;       ,(expand-progn-subexp body)
+;;       (:catch (,(js-intern binding))
+;;         ,(expand-progn-subexp catch-body))
+;;       ,@(when finally
+;;               `((:finally
+;;                  ,(expand-progn-subexp
+;;                    (finally-clause-body finally))))))))
+  
 (defun js-to-paren (js-text)
   (apply #'list 'progn (mapcar #'as-paren (parse js-text))))
 

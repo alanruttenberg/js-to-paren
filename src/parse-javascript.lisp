@@ -689,8 +689,8 @@
                  ((or (encountered-line-terminator lexer)
                       (eq :right-curly (yacc:yacc-parse-error-terminal err))
                       (eq 'yacc:yacc-eof-symbol (yacc:yacc-parse-error-terminal err)))
-                  (invoke-restart 'yacc:insert-terminal :inserted-semicolon #s(token :terminal :inserted-semicolon
-                                                                                     :value ";")))
+                  (invoke-restart 'yacc:insert-terminal :inserted-semicolon
+				  (read-from-string "#s(js-on-cl::token :terminal :inserted-semicolon :value \";\")")))
 
                  ;; Resignal as a js-on-cl error if we don't handle the yacc error
                  (t (resignal err)))))

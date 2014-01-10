@@ -67,9 +67,9 @@
   :depends-on (cl-ppcre))
 
 ;;;; ======= Test operation ========================================================================
-(defmethod perform ((o test-op) (c (eql (find-system 'js-on-cl))))
-  (operate 'load-op 'js-on-cl-tests)
-  (operate 'test-op 'js-on-cl-tests))
+;; (defmethod perform ((o test-op) (c (eql (find-system 'js-on-cl))))
+;;   (operate 'load-op 'js-on-cl-tests)
+;;   (operate 'test-op 'js-on-cl-tests))
 
-(defmethod operation-done-p ((o test-op) (c (eql (find-system 'js-on-cl-tests))))
-  nil)
+;; (defmethod operation-done-p ((o test-op) (c (eql (find-system 'js-on-cl-tests))))
+;;   nil)
